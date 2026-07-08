@@ -1,17 +1,49 @@
-from fastapi import FastAPI, Depends, HTTPException
-from pydantic import BaseModel
+import asyncio
+from adapters import MockEHRAdapter, MockAIAdapter
 
-app = FastAPI(title="Clinical Communications Platform")
+async def run_tests():
+    print("--- Starting System Architecture Tests ---\n")
+    
+    # Initialize our adapters
+    ehr_adapter = MockEHRAdapter()
+    ai_adapter = MockAIAdapter()
 
-def verify_clinician(token: str = "Bearer mock_token_123"):
-    if token != "Bearer mock_token_123":
-        raise HTTPException(status_code=401, detail="Unauthorized. MFA required.")
-    return {"user_id": "Dr_Smith", "role": "Physician"}
+    # TEST 1: Successful EHR Data Retrieval
+    print("Test 1: Fetching valid patient data...")
+    try:
+        patient_data = await ehr_adapter.get_patient_data("12345")
+        print(f"SUCCESS: {patient_data}\n")
+    except Exception as e:
+        print(f"FAILED: {e}\n")
 
-@app.get("/api/v1/messages", dependencies=[Depends(verify_clinician)])
-async def get_messages():
-    return {"status": "success", "data": [{"msg_id": 1, "text": "Patient in Room 4 needs attention."}]}
+    # TEST 2: Simulated EHR Failure (Invalid ID)
+    print("Test 2: Fetching invalid patient data (Testing Error Handling)...")
+    try:
+        error_data = await ehr_adapter.get_patient_data("INVALID")
+        print(f"SUCCESS: {error_data}\n")
+    except Exception as e:
+        print(f"EXPECTED ERROR CAUGHT: {e}\n")
 
-@app.post("/api/v1/transcripts", dependencies=[Depends(verify_clinician)])
-async def upload_transcript(audio_text: str):
-    return {"status": "success", "message": "Transcript received and processing."}
+    # TEST 3: Successful AI Note Generation
+    print("Test 3: Generating AI clinical note from audio...")
+    try:
+        audio_stream = "Patient complains of mild headache and fatigue."
+        clinical_note = await ai_adapter.generate_clinical_note(audio_stream)
+        print(f"SUCCESS: {clinical_note}\n")
+    except Exception as e:
+        print(f"FAILED: {e}\n")
+
+    # TEST 4: Simulated AI Failure (Empty Audio)
+    print("Test 4: Generating AI note with empty audio (Testing Error Handling)...")
+    try:
+        empty_note = await ai_adapter.generate_clinical_note("   ")
+        print(f"SUCCESS: {empty_note}\n")
+    except Exception as e:
+        print(f"EXPECTED ERROR CAUGHT: {e}\n")
+
+    print("--- All Tests Completed ---")
+
+# Run the async event loop
+if __name__ == "__main__":
+    asyncio.run(run_tests())
+    
