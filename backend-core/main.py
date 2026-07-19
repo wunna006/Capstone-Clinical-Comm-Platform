@@ -11,7 +11,7 @@ async def run_tests():
     # TEST 1: Successful EHR Data Retrieval
     print("Test 1: Fetching valid patient data...")
     try:
-        patient_data = await ehr_adapter.get_patient_data("12345")
+        patient_data = await ehr_adapter.get_patient_data("01968")
         print(f"SUCCESS: {patient_data}\n")
     except Exception as e:
         print(f"FAILED: {e}\n")

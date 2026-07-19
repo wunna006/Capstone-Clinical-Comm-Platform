@@ -10,7 +10,7 @@ class MockEHRAdapter(EHRPort):
             
         return {
             "patient_id": patient_id,
-            "name": "John Doe",
+            "name": "Alex Tan",
             "heart_rate": 90,
             "status": "Stable"
         }

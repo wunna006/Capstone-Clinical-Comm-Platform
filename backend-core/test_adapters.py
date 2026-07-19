@@ -6,11 +6,11 @@ class TestMockEHRAdapter(unittest.IsolatedAsyncioTestCase):
     async def test_get_patient_data_success(self):
         """Test that valid patient IDs return the correct data dictionary."""
         adapter = MockEHRAdapter()
-        result = await adapter.get_patient_data("12345")
+        result = await adapter.get_patient_data("01968")
         
         # Assertions check if the output matches our expectations
-        self.assertEqual(result["patient_id"], "12345")
-        self.assertEqual(result["name"], "John Doe")
+        self.assertEqual(result["patient_id"], "01968")
+        self.assertEqual(result["name"], "Alex Tan")
         self.assertEqual(result["status"], "Stable")
 
     async def test_get_patient_data_invalid_id(self):
@@ -20,7 +20,7 @@ class TestMockEHRAdapter(unittest.IsolatedAsyncioTestCase):
         # We expect this specific block of code to raise an error
         with self.assertRaises(ValueError):
             await adapter.get_patient_data("INVALID")
-            
+            test_adaptors
     async def test_get_patient_data_empty_id(self):
         """Test that an empty patient ID correctly raises a ValueError."""
         adapter = MockEHRAdapter()
