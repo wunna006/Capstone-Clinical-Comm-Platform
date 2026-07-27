@@ -1,8 +1,8 @@
 from interfaces import EHRPort, AIPort
 
 class MockEHRAdapter(EHRPort):
-    def get_patient_data(self, patient_id: str) -> dict:
-        # Simulating a call to Epic or Cerner
+    # Add 'async' here
+    async def get_patient_data(self, patient_id: str) -> dict:
         print(f"[EHR ADAPTER] Fetching data for {patient_id} from Mock Epic EHR...")
         return {
             "patient_id": patient_id,
@@ -13,19 +13,13 @@ class MockEHRAdapter(EHRPort):
         }
 
 class MockAIAdapter(AIPort):
-    def generate_clinical_note(self, audio_text: str) -> dict:
-        # Simulating a call to a Cloud Ambient AI Service
-        print("[AI ADAPTER] Processing audio text into SOAP note...")
+    # Add 'async' here
+    async def generate_clinical_note(self, audio_text: str) -> dict:
+        print(f"[AI ADAPTER] Processing audio text into SOAP note...")
         return {
             "Subjective": "Patient reports feeling well.",
             "Objective": "Vitals are stable.",
             "Assessment": "Routine checkup.",
             "Plan": "Continue current monitoring."
         }
-
-# Example of how to use them:
-ehr = MockEHRAdapter()
-patient_info = ehr.get_patient_data("PT-10293")
-
-ai = MockAIAdapter()
-soap_note = ai.generate_clinical_note("The patient says they feel fine today.")
+    
