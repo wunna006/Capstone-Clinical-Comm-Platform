@@ -41,3 +41,28 @@ async def trigger_alert(room: str, event: str):
     }
     await manager.broadcast(alert_payload)
     return {"status": "Alert Broadcasted"}
+import asyncio
+from adapters import MockEHRAdapter, MockAIAdapter
+
+async def run_architectural_tests():
+    print("\n--- Starting Architectural Validation ---")
+    ehr = MockEHRAdapter()
+    ai = MockAIAdapter()
+    
+    try:
+        # Test 1: Fetch Patient Data
+        patient_data = await ehr.get_patient_data("P123")
+        print(f"SUCCESS: {patient_data}")
+        
+        # Test 2: Generate SOAP Note
+        audio_input = "Patient reports fatigue and shortness of breath."
+        soap_note = await ai.generate_clinical_note(audio_input)
+        print(f"SUCCESS: AI Generated SOAP Note: {soap_note}")
+        
+    except Exception as e:
+        print(f"ERROR: Implementation failure: {e}")
+
+if __name__ == "__main__":
+    # This runs the tests when you execute 'python main.py'
+    asyncio.run(run_architectural_tests())
+    
